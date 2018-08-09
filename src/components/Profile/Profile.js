@@ -30,11 +30,16 @@ class Profile extends Component {
     onProfileUpdate = data => {
         fetch(`http://localhost:3000/profile/${this.props.user.id}`, {
             method: 'post',
-            headers: {'content-type': 'application/json'},
+            headers: {
+                'content-type': 'application/json',
+                'Authorization': window.sessionStorage.getItem('token'),
+            },
             body: JSON.stringify({ formInput: data })
         }).then(res => {
-            this.props.toggleModal()
-            this.props.loadUser({ ...this.props.user, ...data })
+            if (res.status === 200 || res.status === 304) {
+                this.props.toggleModal()
+                this.props.loadUser({...this.props.user, ...data})
+            }
         }).catch(err => console.log(err))
     }
 
